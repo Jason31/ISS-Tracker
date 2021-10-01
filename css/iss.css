@@ -1,0 +1,14 @@
+body{
+  margin: 0 70px 0 70px;
+  background: ghostwhite;
+}
+#map{
+  margin-top:;
+  width: 100%;
+  height: 600px;
+}
+#lat, #lon, #alti{
+  color: gray;
+  font-family: lato;
+  font-size: 12px;
+}

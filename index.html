@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<title>ISS - Fetch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<link href="css/iss.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div id="map"></div>
+<div id="lat"></div>
+<div id="lon"></div>
+<div id="alti"></div>
+
+<script>
+
+const mymap = L.map('map').setView([0, 0], 1);
+const marker = L.marker([0, 0]).addTo(mymap);
+
+const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+const tileUrl = 'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png';
+const tiles = L.tileLayer(tileUrl, { attribution });
+tiles.addTo(mymap);
+
+const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+
+let firstTime = true; 
+
+async function getISS() {
+  const response = await fetch(api_url);
+  const data = await response.json();
+  const {latitude, longitude, altitude} = data;
+  
+  
+  marker.setLatLng([latitude, longitude]);
+  
+  if(firstTime){
+  mymap.setView([latitude, longitude], 5);
+ 
+   const popup = L.popup()
+    .setContent('ISS Location');
+    marker.bindPopup(popup).openPopup(); 
+  
+  firstTime = false;
+    }
+	document.getElementById('lat').textContent = "Latitude: " + latitude;
+	document.getElementById('lon').textContent = "Longitude: " + longitude;
+    document.getElementById('alti').textContent = "Altitude: " + altitude + " km.";
+  }
+  getISS();
+  setInterval(getISS, 1000);
+  
+</script>
+
+
+</body>
+</html>
